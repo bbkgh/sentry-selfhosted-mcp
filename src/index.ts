@@ -119,7 +119,7 @@ class SelfHostedSentryServer {
         {
           name: 'get_sentry_issue',
           description: 'Retrieve details for a specific Sentry issue by ID or URL.',
-          inputSchema: { type: 'object', properties: { issue_id_or_url: { type: 'string', description: 'Sentry issue ID or full issue URL.' } }, required: ['issue_id_or_url'] },
+          inputSchema: { type: 'object', properties: { issue_id_or_url: { type: 'string', description: 'Sentry issue ID or full issue URL. Issue ID is a number e.g: 123456' } }, required: ['issue_id_or_url'] },
         },
         {
             name: 'list_sentry_projects',
