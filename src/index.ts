@@ -179,43 +179,6 @@ class SelfHostedSentryServer {
             required: ["project_slug", "event_id"],
           },
         },
-        {
-          name: "update_sentry_issue_status",
-          description: "Update the status of a Sentry issue.",
-          inputSchema: {
-            type: "object",
-            properties: {
-              issue_id: {
-                type: "string",
-                description: "The ID of the issue to update.",
-              },
-              status: {
-                type: "string",
-                enum: ["resolved", "ignored", "unresolved"],
-                description: "The new status for the issue.",
-              },
-            },
-            required: ["issue_id", "status"],
-          },
-        },
-        {
-          name: "create_sentry_issue_comment",
-          description: "Add a comment to a Sentry issue.",
-          inputSchema: {
-            type: "object",
-            properties: {
-              issue_id: {
-                type: "string",
-                description: "The ID of the issue to comment on.",
-              },
-              comment_text: {
-                type: "string",
-                description: "The text content of the comment.",
-              },
-            },
-            required: ["issue_id", "comment_text"],
-          },
-        },
       ],
     }));
 
@@ -321,44 +284,6 @@ class SelfHostedSentryServer {
           // Note: Sentry API might use issue ID for event context, or this endpoint might work. Adjust if needed.
           const response = await this.axiosInstance.get(
             `projects/${ORG_SLUG}/${args.project_slug}/events/${args.event_id}/`
-          );
-          return {
-            content: [
-              { type: "text", text: JSON.stringify(response.data, null, 2) },
-            ],
-          };
-        }
-        // --- update_sentry_issue_status ---
-        else if (toolName === "update_sentry_issue_status") {
-          if (!isValidUpdateIssueArgs(args))
-            throw new McpError(
-              ErrorCode.InvalidParams,
-              "Invalid args for update_sentry_issue_status."
-            );
-          console.error(
-            `Updating issue ${args.issue_id} status to ${args.status}`
-          );
-          const response = await this.axiosInstance.put(
-            `issues/${args.issue_id}/`,
-            { status: args.status }
-          );
-          return {
-            content: [
-              { type: "text", text: JSON.stringify(response.data, null, 2) },
-            ],
-          };
-        }
-        // --- create_sentry_issue_comment ---
-        else if (toolName === "create_sentry_issue_comment") {
-          if (!isValidCreateCommentArgs(args))
-            throw new McpError(
-              ErrorCode.InvalidParams,
-              "Invalid args for create_sentry_issue_comment."
-            );
-          console.error(`Adding comment to issue ${args.issue_id}`);
-          const response = await this.axiosInstance.post(
-            `issues/${args.issue_id}/comments/`,
-            { text: args.comment_text }
           );
           return {
             content: [
